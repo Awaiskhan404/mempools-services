@@ -1,0 +1,18 @@
+{
+    "application_config": {
+        "cosmos_chain_grpc_endpoint": "http://juno-grpc.polkachu.com:12690/"
+    },
+    "gateway_config": {
+        "cognito_config": {
+            "cognito_client_id": "1bt7rhpl5467atvrufn503nko3",
+            "cognito_client_secret": "1fc25e0fch0ef01ama0brbo5gskveccnfgt4v9o5f4tvioo22e9i",
+            "cognito_redirect_url": "https://example.com",
+            "cognito_user_pool_id": "us-east-2_xzWXk2bDo",
+            "aws_region": "us-east-2"
+        }
+    },
+    "notification_config": {
+        "mailer_email": "mempoolstest123@gmail.com",
+        "mailer_email_app_password": "ycgkxwkdycqjizap"
+    }
+}

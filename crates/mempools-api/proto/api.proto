@@ -1,0 +1,397 @@
+syntax = "proto3";
+package api;
+
+service GatewayPublic {
+    rpc SubmitCognitoCodeGrant(SubmitCognitoCodeGrantRequest) returns (SubmitCognitoCodeGrantResponse);
+}
+
+service GatewayAdmin {
+    rpc CreateChain(CreateChainRequest) returns (CreateChainResponse);
+    rpc UpdateChain(UpdateChainRequest) returns (UpdateChainResponse);
+}
+
+service Gateway {
+    // Destinations
+    rpc InitiateDestinationRegistration(InitiateDestinationRegistrationRequest) returns (InitiateDestinationRegistrationResponse);
+    rpc ConfirmDestinationRegistration(ConfirmDestinationRegistrationRequest) returns (ConfirmDestinationRegistrationResponse);
+    rpc GetUserDestinations(GetUserDestinationsRequest) returns (GetUserDestinationsResponse);
+    rpc UpdateUserDestination(UpdateUserDestinationRequest) returns (UpdateUserDestinationResponse);
+    rpc DeleteUserDestination(DeleteUserDestinationRequest) returns (DeleteUserDestinationResponse);
+
+    // Alerts
+    rpc CreateAlert(CreateAlertRequest) returns (CreateAlertResponse);
+    rpc GetAlerts(GetAlertsRequest) returns (GetAlertsResponse);
+    rpc UpdateAlert(UpdateAlertRequest) returns (UpdateAlertResponse);
+    rpc DeleteAlert(DeleteAlertRequest) returns (DeleteAlertResponse);
+
+    // Notifications
+    rpc GetNotifications(GetNotificationsRequest) returns (GetNotificationsResponse);
+
+    // Chains
+    rpc GetChains(GetChainsRequest) returns (GetChainsResponse);
+}
+
+message UpdateAlertRequest {
+    UserAlert alert = 1;
+}
+
+message UpdateAlertResponse {
+    UserAlert alert = 1;
+}
+
+message DeleteAlertRequest {
+    string alert_id = 1;
+}
+
+message DeleteAlertResponse {
+}
+
+message DeleteUserDestinationRequest {
+    string id = 1;
+}
+
+message DeleteUserDestinationResponse {
+}
+
+message UpdateUserDestinationRequest {
+    UserDestination destination = 1;
+}
+
+message UpdateUserDestinationResponse {
+    UserDestination destination = 1;
+}
+
+message GetNotificationsRequest {
+    uint64 page = 1;
+    string alert_id = 2;
+}
+
+message GetNotificationsResponse {
+    repeated AlertNotification notifications = 1;
+}
+
+
+message SubmitCognitoCodeGrantRequest {
+    string code = 1;
+}
+
+message SubmitCognitoCodeGrantResponse {
+    string id_token = 1;
+}
+
+
+message CreateChainRequest {
+    string name = 2;
+    string icon = 3;
+    ChainData chain_data = 6;
+}
+
+message CreateChainResponse {
+    Chain chain = 1;
+}
+
+message UpdateChainRequest {
+    Chain chain = 1;
+}
+
+message UpdateChainResponse {
+    Chain chain = 1;
+}
+
+message GetChainsRequest {}
+message GetChainsResponse {
+    repeated Chain chains = 1;
+}
+
+message Chain {
+    enum Status {
+        ENABLED = 0;
+        DISABLED = 1;
+    }
+    
+    string id = 1;
+    string name = 2;
+    string icon = 3;
+    Status status = 4;
+    ChainData chain_data = 5;
+}
+
+
+message ChainData {
+    oneof chain_data {
+        CosmosChainData cosmos_chain_data = 1;  
+        CosmosEvmChainData cosmos_evm_chain_data = 2;  
+        EthChainData eth_chain_data = 3;  
+    }
+}
+
+message CosmosChainData {
+    string grpc_endpoint = 1;
+    string bech32_prefix = 2;
+}
+
+message CosmosEvmChainData {
+    CosmosChainData cosmos_chain_data = 1;
+    EthChainData eth_chain_data = 2;
+}
+
+message EthChainData {
+    string eth_rpc_endpoint = 1;
+}
+
+message GetUserDestinationsRequest {
+    string user_id = 1;
+    uint64 page = 2;
+}
+
+message GetUserDestinationsResponse {
+    repeated UserDestination user_destinations = 1;
+}
+
+message InitiateDestinationRegistrationRequest {
+    string user_id = 1;
+    Destination destination = 2;
+}
+
+message InitiateDestinationRegistrationResponse {
+    string destination_registration_proposal_id = 1;
+}
+
+message ConfirmDestinationRegistrationRequest {
+    string destination_registration_proposal_id = 1;
+    string confirmation_code = 2;
+}
+
+message ConfirmDestinationRegistrationResponse {
+    UserDestination destination = 1;
+}
+
+message UserDestination {
+    enum Status {
+        ENABLED = 0;
+        DISABLED = 1;
+    }
+
+    string id = 1;
+    string user_id = 2;
+    Destination Destination = 3;
+    Status status = 4;
+}
+
+message DestinationRegistrationProposal {
+    string id = 1;
+    string user_id = 2;
+    string confirmation_code = 3;
+    Destination destination = 4;
+}
+
+message GetAlertsRequest {
+    uint64 page = 1;
+    string user_id = 2;
+}
+
+message GetAlertsResponse {
+    repeated UserAlert alerts = 1;
+}
+
+message CreateAlertRequest {
+    string user_id = 1;
+    Alert alert = 2; 
+    string message = 3;
+    repeated string destination_ids = 4;
+    string chain_id = 5;
+    string name = 6;
+}
+
+
+message CreateAlertResponse {
+    UserAlert alert = 1;
+}
+
+
+message UserAlert {
+    enum Status {
+        Enabled = 0;
+        Disabled = 1;
+    }
+
+    
+    string id = 1;
+    string user_id = 2;
+    Alert alert = 3; 
+    string message = 4;
+    repeated string destination_ids = 5;
+    Status status = 6;
+    string chain_id = 7;
+    AlertSource alert_source = 8;
+    string name = 9;
+}
+
+enum AlertSource {
+    CosmosMsg = 0;
+    CosmosTx = 1;
+    EthLog = 2;
+    EthTx = 3;
+}
+
+
+message Alert {
+    oneof chain_alert {
+        CosmosAlert cosmos_alert = 1;
+        CosmosEvmAlert cosmos_evm_alert = 2;
+        EthAlert eth_alert = 3;
+    }
+}
+
+message CosmosAlert {
+    oneof cosmos_alert {
+        AlertCosmosSendFunds alert_cosmos_send_funds = 1;
+        AlertCosmosMonitorFunds alert_cosmos_monitor_funds = 2;
+        AlertCosmosSmartContractEvents alert_cosmos_smart_contract_events = 3;
+        AlertCosmosTxOutcome alert_cosmos_tx_outcome = 4;
+    }
+}
+
+message CosmosEvmAlert {
+    oneof cosmos_evm_alert {
+        AlertEthMonitorFunds alert_eth_monitor_funds = 1;
+        AlertEthTxOutcome alert_eth_tx_outcome = 2;
+        AlertEthSmartContractEvents alert_eth_smart_contract_events = 3;
+        AlertCosmosMonitorFunds alert_cosmos_monitor_funds = 4;
+        AlertCosmosTxOutcome alert_cosmos_tx_outcome = 5;
+    }
+}
+
+message EthAlert {
+    oneof eth_alert {
+        AlertEthMonitorFunds alert_eth_monitor_funds = 1;
+        AlertEthTxOutcome alert_eth_tx_outcome = 2;
+        AlertEthSmartContractEvents alert_eth_smart_contract_events = 3;
+    }
+}
+
+message AlertEthSmartContractEvents {
+    string contract_addr = 1;
+    string contract_abi = 2;
+    string event_name = 3;
+    map<string,string> event_attributes = 4;
+}
+
+message AlertEthMonitorFunds {
+    string address = 1;
+}
+
+message AlertEthTxOutcome {
+    enum EthTxOutcome {
+        SUCCEEDED = 0;
+        FAILED = 1;
+    }
+
+    string signer = 1;
+    EthTxOutcome outcome = 2;
+}
+
+message AlertCosmosSmartContractEvents {
+    string address = 1;
+    map<string, string> event_attributes = 2;
+    string event_name = 3;
+}
+
+message AlertCosmosMonitorFunds {
+    string address = 1;
+}
+
+message AlertCosmosSendFunds {
+    string from = 1;
+    string to = 2;
+}
+
+message AlertCosmosTxOutcome {
+    enum CosmosTxOutcome {
+        SUCCEEDED = 0;
+        FAILED = 1;
+    }
+
+    string signer = 1;
+    CosmosTxOutcome outcome = 2;
+}
+
+message Destination {
+    oneof destination {
+        string email = 1;
+        string webhook = 2; 
+        string telegram = 3;
+        string discord_webhook = 4; 
+    }
+}
+
+message AlertNotification {
+    string id = 1;
+    AlertNotificationData notification_data = 2;
+    string alert_id = 3;
+    string alert_source_id = 4;
+}
+
+message AlertNotificationData {
+    oneof alert_notification_data {
+        MonitorFundsCoinNotificationData monitor_funds_coin = 1;
+        MonitorFundsTokenNotificationData monitor_funds_token = 2;
+        TxOutcomeNotificationData tx_outcome = 3;
+        SmartContractEventsNotificationData sc_events = 4;
+    }
+}
+
+message SmartContractEventsNotificationData {
+    string contract_addr = 1;
+    string event_name = 2;
+    map<string,string> event_attributes = 3;
+    string tx_hash = 4;
+}
+
+message TxOutcomeNotificationData {
+    string signer = 1;
+    string outcome = 2;
+    string tx_hash = 3;
+}
+
+message MonitorFundsCoinNotificationData {
+    message CoinAmount {
+        string amount = 1;
+        string denom = 2;
+    }
+
+    string from = 1;
+    string to = 2;
+    repeated CoinAmount amount = 3;
+    string tx_hash = 4;
+}
+
+message MonitorFundsTokenNotificationData {
+    string from = 1;
+    string to = 2;
+    string contract_addr = 3;
+    string amount = 4;
+    string tx_hash = 5;
+}
+
+message CrawlerData {
+    oneof crawler_data {
+        CosmosCrawlerData cosmos = 1;
+        CosmosEvmCrawlerData cosmos_evm = 2;
+        EthCrawlerData ethereum = 3;
+    }
+}
+
+message CosmosCrawlerData {
+    uint64 processed_blocks = 1;
+}
+
+message CosmosEvmCrawlerData {
+    CosmosCrawlerData cosmos = 1;
+    EthCrawlerData ethereum = 2;
+}
+
+message EthCrawlerData {
+    uint64 processed_blocks = 1;
+}
+

@@ -1,0 +1,19 @@
+[package]
+name = "util"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cosmrs.workspace = true
+web3.workspace = true
+base64.workspace = true
+mempools-api = { path = "../mempools-api" }
+serde.workspace = true
+tonic.workspace = true
+serde_json.workspace = true
+hex.workspace = true
+db-entities = { path = "../db-entities" }
+dyn-clone.workspace = true
+tokio.workspace = true

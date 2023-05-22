@@ -1,0 +1,39 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+alert-service = { path = "../alert-service" }
+crawler-service = { path = "../crawler-service" }
+destination-service = { path = "../destination-service" }
+filter-service = { path = "../filter-service" }
+gateway-service = { path = "../gateway-service" }
+notification-service = { path = "../notification-service" }
+chain-service = { path = "../chain-service" }
+auth-service = { path = "../auth-service" }
+mempools-api = { path = "../mempools-api" }
+db-migration = { path = "../db-migration" }
+util = { path = "../util" }
+tonic.workspace = true
+tokio.workspace = true
+# lettre.workspace = true
+tonic-web.workspace = true
+jsonwebtokens-cognito.workspace = true
+serde.workspace = true
+base64.workspace = true
+serde_json.workspace = true
+log.workspace = true
+env_logger.workspace = true
+tower-http.workspace = true
+tonic-reflection.workspace = true
+sea-orm.workspace = true
+tower.workspace = true
+
+[features]
+default = ["dev"]
+prod = ["auth", "cors"]
+dev = ["cors", "reflection"]
+auth = []
+cors = []
+reflection = []

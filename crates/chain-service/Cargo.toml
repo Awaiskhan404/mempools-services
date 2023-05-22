@@ -1,0 +1,16 @@
+[package]
+name = "chain-service"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+util = { path = "../util" }
+mempools-api = { path = "../mempools-api" }
+db-entities = { path = "../db-entities" }
+sea-orm.workspace = true
+cosmrs.workspace = true
+tonic.workspace = true
+hex.workspace = true
+dyn-clone.workspace = true

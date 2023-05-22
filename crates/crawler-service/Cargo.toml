@@ -1,0 +1,19 @@
+[package]
+name = "crawler-service"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mempools-api = { path = "../mempools-api" }
+db-entities = { path = "../db-entities" }
+util = { path = "../util" }
+tonic.workspace = true
+tokio.workspace = true
+cosmrs.workspace = true
+hex.workspace = true
+log.workspace = true
+sea-orm.workspace = true
+web3.workspace = true
+

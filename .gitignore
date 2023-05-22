@@ -1,0 +1,5 @@
+target
+crates/mempools-api/src/descriptor.bin
+crates/mempools-api/js/*
+.vscode
+data.db

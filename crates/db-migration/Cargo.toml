@@ -1,0 +1,11 @@
+[package]
+name = "db-migration"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+tokio.workspace = true
+sea-orm-migration.workspace = true
+db-entities = { path = "../db-entities" }
+mempools-api = { path = "../mempools-api" }
