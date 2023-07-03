@@ -3,7 +3,7 @@ members = ["crates/*"]
 
 [workspace.dependencies]
 tonic = { version = "0.8.0", features = ["tls", "tls-roots"] }
-tokio = { version = "1.28", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.29", features = ["macros", "rt-multi-thread"] }
 cosmrs = { version = "0.11.0", features = ["grpc", "cosmwasm"] }
 lettre = "0.10"
 tonic-web = "0.5.0"
